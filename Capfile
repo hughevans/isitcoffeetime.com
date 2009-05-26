@@ -10,7 +10,6 @@ set :user,              deploy_config['user']
 set :domain,            deploy_config['domain']
 set :application,       'coffeetime'
 set :repository,        "#{user}@#{domain}:code/#{application}.git"
-set :repository,        'git://artpop/hughevans.net.git'
 set :deploy_to,         "/home/#{user}/deployments/#{domain}" 
 set :deploy_via,        :remote_cache
 set :scm,               'git'
