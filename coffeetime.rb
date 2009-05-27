@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'sequel'
 require 'sinatra'
+require 'json'
 require 'haml'
 
 DB = Sequel.sqlite('coffeetime.db')
