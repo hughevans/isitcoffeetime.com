@@ -9,5 +9,5 @@
   %form{:action => '/teams', :method => 'post'}
     %label{:for => 'name'} Team name
     %input{:id => 'name', :name => 'name', :type => 'text'}
-    %button Go
-  
+    %button{:type => 'submit'} Go
+  #flash_error{:style => 'display: none;'}
