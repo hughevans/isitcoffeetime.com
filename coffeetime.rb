@@ -15,19 +15,17 @@ DB.create_table :subscribers do
   String :twitter_username
 end unless DB.table_exists?(:subscribers)
 
-class Base < Sequel::Model
-  plugin 
-  
-
 class Team < Sequel::Model
-  validates_presence    :name
-  validates_uniqueness  :name
-  validates_format      :name, :with => /^[A-Za-z0-9]+[A-Za-z0-9\-_]*$/
+  plugin :validation_class_methods
+  
+  # validates_presence    :name
+  # validates_uniqueness  :name
+  # validates_format      :name, :with => /^[A-Za-z0-9]+[A-Za-z0-9\-_]*$/
 end
 
 class Subscriber < Sequel::Model
-  validates_presence  :team_id
-  validates_presence  :twitter_username
+  # validates_presence  :team_id
+  # validates_presence  :twitter_username
 end
 
 helpers do
@@ -45,6 +43,7 @@ end
 post '/teams' do
   content_type :json
   @team = Team.new(params[:team])
+  
   if @team.save
     status 201
     {:success => true, :team => {:name => @team.name}}.to_json
