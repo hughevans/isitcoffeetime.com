@@ -15,15 +15,19 @@ DB.create_table :subscribers do
   String :twitter_username
 end unless DB.table_exists?(:subscribers)
 
+class Base < Sequel::Model
+  plugin 
+  
+
 class Team < Sequel::Model
-  validates_presence_of   :name
-  validates_uniqueness_of :name
-  validates_format_of     :name, :with => /^[A-Za-z0-9]+[A-Za-z0-9\-_]*$/
+  validates_presence    :name
+  validates_uniqueness  :name
+  validates_format      :name, :with => /^[A-Za-z0-9]+[A-Za-z0-9\-_]*$/
 end
 
 class Subscriber < Sequel::Model
-  validates_presence_of :team_id
-  validates_presence_of :twitter_username
+  validates_presence  :team_id
+  validates_presence  :twitter_username
 end
 
 helpers do
@@ -38,11 +42,14 @@ get '/:style.css' do
   sass :"stylesheets/#{params[:style]}"
 end
 
-post '/team.json' do
+post '/teams' do
+  content_type :json
   @team = Team.new(params[:team])
   if @team.save
-    # return success json
+    status 201
+    {:success => true, :team => {:name => @team.name}}.to_json
   else
-    # return error json
+    status 400
+    {:success => false, :team => {:name => @team.name}, :errors => @team.errors}.to_json
   end
 end
