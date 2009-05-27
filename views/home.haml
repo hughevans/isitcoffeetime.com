@@ -8,6 +8,6 @@
 #team{:style => 'display: none;'}
   %form{:action => '/teams', :method => 'post'}
     %label{:for => 'name'} Team name
-    %input{:id => 'name', :name => 'name', :type => 'text'}
+    %input{:id => 'name', :name => 'team[name]', :type => 'text'}
     %button Go
   
