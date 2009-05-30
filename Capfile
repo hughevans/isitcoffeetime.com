@@ -71,6 +71,7 @@ namespace :dependent_gems do
     # Dreamhost non-sudo $HOME/.gem install
     run 'gem install sequel -v 3.0.0'
     run 'gem install json -v 1.1.6'
+    run 'gem install sequel_notnaughty -v 0.6.2'
   end
 end
 

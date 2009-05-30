@@ -1,11 +1,12 @@
-#yes yes
-
-#byline
-  = surround '(', ')' do
-    Always, but you can
-    %a{:href => '#custom'} customise
-
-#custom{:style => 'display: none;'}
+-# #yes yes
+-# 
+-# #byline
+-#   = surround '(', ')' do
+-#     Always, but you can
+-#     %a{:href => '#custom'} customise
+-# 
+-# #custom{:style => 'display: none;'}
+#custom
   %form{:action => '/teams', :method => 'post'}
     .form_line
       %label{:for => 'name'} isitcoffeetime.com/
@@ -18,5 +19,5 @@
       %label{:for => 'twitter_account'} Twitter Account
       %input{:id => 'twitter_account', :name => 'team[twitter_account]', :type => 'text'}
     %div
-      %button{:type => 'submit'} Start making it coffee time
+      %button{:type => 'submit'} Submit
   #flash_error{:style => 'display: none;'}
