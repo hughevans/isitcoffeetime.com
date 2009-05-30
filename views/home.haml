@@ -12,10 +12,11 @@
       %input{:id => 'name', :name => 'team[name]', :type => 'text'}
     .form_line
       %label{:for => 'timezone'} Timezone
-      %input{:id => 'timezone', :name => 'team[timezone]', :type => 'text'}
+      %select{:id => 'timezone', :name => 'team[timezone]'}
+        = haml(:_time_zones, :layout => false)
     .form_line
-      %label{:for => 'owner'} Owner
-      %input{:id => 'owner', :name => 'team[owner]', :type => 'text'}
+      %label{:for => 'twitter_account'} Twitter Account
+      %input{:id => 'twitter_account', :name => 'team[twitter_account]', :type => 'text'}
     %div
       %button{:type => 'submit'} Make it coffee time
   #flash_error{:style => 'display: none;'}
