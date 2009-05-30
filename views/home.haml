@@ -1,12 +1,11 @@
--# #yes yes
--# 
--# #byline
--#   = surround '(', ')' do
--#     Always, but you can
--#     %a{:href => '#custom'} customise
--# 
--# #custom{:style => 'display: none;'}
-#custom
+#yes yes
+
+#byline
+  = surround '(', ')' do
+    Always, but you can
+    %a{:href => '#custom'} customise
+
+#custom{:style => 'display: none;'}
   %form{:action => '/teams', :method => 'post'}
     .form_line
       %label{:for => 'name'} isitcoffeetime.com/
