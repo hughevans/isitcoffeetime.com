@@ -11,8 +11,8 @@
       %label{:for => 'name'} isitcoffeetime.com/
       %input{:id => 'name', :name => 'team[name]', :type => 'text'}
     .form_line
-      %label{:for => 'timezone'} Timezone
-      %select{:id => 'timezone', :name => 'team[timezone]'}
+      %label{:for => 'time_zone'} Time Zone
+      %select{:id => 'time_zone', :name => 'team[time_zone]'}
         = haml(:_time_zones, :layout => false)
     .form_line
       %label{:for => 'twitter_account'} Twitter Account
