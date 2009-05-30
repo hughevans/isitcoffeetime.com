@@ -8,21 +8,15 @@ $(document).ready(function() {
     return false;
   });
   
-  $('input#name').change(function () {
-    $.ajax({
-      type: 'POST',
-      url: '/teams?validate_only=true',
-      dataType: 'json',
-      data: $(this).serialize(),
-      success: function(rsp) {
-        if(rsp.no_errors) {
-          alert('No Errors');
-        }
-        else {
-          alert(rsp.errors.name[0]);
-        };
-      }
-    });
+  $('input#name, input#twitter_account').keyup(function(press) {
+    // Don't check when tabbing into field
+    if (press.keyCode != 9) {
+      validateAttribute(this);
+    }
+  });
+  
+  $('select#time_zone').click(function () {
+    validateAttribute(this);
   });
   
   $('#custom form').submit(function() {
@@ -33,15 +27,31 @@ $(document).ready(function() {
       data: $(this).serialize(),
       success: function(rsp) {
         if(rsp.success) {
-          alert('Saved');
           location.href = '/' + rsp.team.name;
         }
         else {
-          alert(rsp.errors.name);
-        };
+          alert('Fix your form.');
+        }
       }
     });
     return false;
   });
   
+  function validateAttribute(e) {
+    var element = $(e);
+    $.ajax({
+      type: 'POST',
+      url: '/teams?validate=' + element.attr('id'),
+      dataType: 'json',
+      data: element.serialize(),
+      success: function(rsp) {
+        if(rsp.no_errors) {
+          element.css('border-color', '#999');
+        }
+        else {
+          element.css('border-color', 'red');
+        }
+      }
+    });
+  };
 });
