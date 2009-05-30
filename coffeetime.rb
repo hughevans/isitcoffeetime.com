@@ -14,10 +14,8 @@ DB.create_table :teams do
   String :twitter_account
 end unless DB.table_exists?(:teams)
 
-Sequel::Model.plugin(:validation_class_methods)
-
 class Team < Sequel::Model
-  # raise_on_save_failure = true
+  plugin :validation_class_methods
   validates_presence_of :name,
     :message => "Can't be blank"
   validates_format_of :name, 
