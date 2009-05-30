@@ -8,20 +8,15 @@ require 'haml'
 DB = Sequel.sqlite('coffeetime.db')
 
 DB.create_table :teams do
-  primary_key :id
   String :name
   String :time_zone
   String :twitter_account
 end unless DB.table_exists?(:teams)
 
-DB.create_table :subscribers do
-  Integer :team_id
-  String :twitter_username
-end unless DB.table_exists?(:subscribers)
-
 Sequel::Model.plugin(:validation_class_methods)
 
 class Team < Sequel::Model
+  set_primary_key :name
   validates_presence_of :name,
     :message => "Can't be blank"
   validates_format_of :name, 
@@ -29,11 +24,8 @@ class Team < Sequel::Model
     :message => 'Can only include a-z, dashes and unerscores'
   validates_uniqueness_of :name,
     :message => 'Not available'
-end
-
-class Subscriber < Sequel::Model
-  # validates_presence  :team_id
-  # validates_presence  :twitter_username
+  validates_presence_of :twitter_account,
+    :message => "Can't be blank"
 end
 
 helpers do
@@ -67,4 +59,9 @@ post '/teams' do
     status 200
     {:success => false, :errors => team.errors.name[0]}.to_json
   end
+end
+
+get '/:team_name' do
+  @team = Team[params[:team_name]] || raise(Sinatra::NotFound)
+  haml :team
 end
