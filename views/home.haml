@@ -1,13 +1,21 @@
 #yes yes
 
-#custom
+#byline
   = surround '(', ')' do
     Always, but you can
-    %a{:href => '#team'} customise
+    %a{:href => '#custom'} customise
 
-#team{:style => 'display: none;'}
+#custom{:style => 'display: none;'}
   %form{:action => '/teams', :method => 'post'}
-    %label{:for => 'name'} isitcoffeetime.com/
-    %input{:id => 'name', :name => 'team[name]', :type => 'text'}
-    %button{:type => 'submit'} Go
+    .form_line
+      %label{:for => 'name'} isitcoffeetime.com/
+      %input{:id => 'name', :name => 'team[name]', :type => 'text'}
+    .form_line
+      %label{:for => 'timezone'} Timezone
+      %input{:id => 'timezone', :name => 'team[timezone]', :type => 'text'}
+    .form_line
+      %label{:for => 'owner'} Owner
+      %input{:id => 'owner', :name => 'team[owner]', :type => 'text'}
+    %div
+      %button{:type => 'submit'} Make it coffee time
   #flash_error{:style => 'display: none;'}

@@ -1,11 +1,14 @@
 $(document).ready(function() {
-  $('#custom a').click(function() {
-    $(this).parent().hide();
-    $('#team').slideDown();
+  $('#byline a').click(function() {
+    $('#yes').animate({marginTop:'-40px'});
+    $('#byline').hide();
+    $('#custom').slideDown('normal', function() {
+      $('input#name').focus();
+    });
     return false;
   });
   
-  $('#team form').submit(function() {
+  $('#custom form').submit(function() {
     $.ajax({
       type: "POST",
       url: this.action,

@@ -21,16 +21,16 @@ set :use_sudo,          false
 server domain, :app, :web
 
 config_rackup = <<-eos
-  require 'rubygems'
-  require 'vendor/rack/lib/rack'
-  require 'vendor/sinatra/lib/sinatra'
+require 'rubygems'
+require 'vendor/rack/lib/rack'
+require 'vendor/sinatra/lib/sinatra'
 
-  disable :run
-  set :app_file, 'coffeetime.rb'
-  set :views,    '#{deploy_to}/current/views'
+disable :run
+set :app_file, 'coffeetime.rb'
+set :views,    '#{deploy_to}/current/views'
 
-  require 'coffeetime'
-  run Sinatra::Application
+require 'coffeetime'
+run Sinatra::Application
 eos
 
 after 'deploy:setup',       'rackup:create_config'
@@ -51,6 +51,7 @@ after 'deploy:update_code', 'vendor_gems:symlink'
 
 namespace :vendor_gems do
   task :install_and_unpack do
+    # Dreamhost non-sudo $HOME/.gem install
     run 'gem install sinatra -v 0.9.0.4' # Also installs rack 0.9.1
     run "cd #{shared_path}/system && gem unpack rack -v 0.9.1 && mv rack-0.9.1 rack"
     run "cd #{shared_path}/system && gem unpack sinatra -v 0.9.0.4 && mv sinatra-0.9.0.4 sinatra"
@@ -60,6 +61,16 @@ namespace :vendor_gems do
     run "mkdir -p #{release_path}/vendor/"
     run "ln -nfs #{shared_path}/system/rack #{release_path}/vendor/rack"
     run "ln -nfs #{shared_path}/system/sinatra #{release_path}/vendor/sinatra"
+  end
+end
+
+after 'deploy:setup', 'dependent_gems:install'
+
+namespace :dependent_gems do
+  task :install do
+    # Dreamhost non-sudo $HOME/.gem install
+    run 'gem install sequel -v 3.0.0'
+    run 'gem install json -v 1.1.6'
   end
 end
 

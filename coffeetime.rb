@@ -1,6 +1,7 @@
 require 'rubygems'
-require 'sequel'
 require 'sinatra'
+require 'sequel'
+require 'tzinfo'
 require 'json'
 require 'haml'
 
