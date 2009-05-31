@@ -15,11 +15,11 @@ $(document).ready(function() {
     }
   });
   
-  $('select#time_zone').change(function () {
+  $('input#name, input#twitter_account, select#time_zone').blur(function () {
     validateAttribute(this);
   });
   
-  $('select#time_zone').blur(function () {
+  $('select#time_zone').change(function () {
     validateAttribute(this);
   });
   
