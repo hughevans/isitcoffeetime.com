@@ -22,13 +22,6 @@ $(document).ready(function() {
   $('select#time_zone').blur(function () {
     validateAttribute(this);
   });
-
-  $('select#time_zone').keyup(function (press) {
-    if (press.keyCode == 13) {
-      $('#custom form').trigger('submit');
-      return false;
-    }
-  });
   
   $('#custom form').submit(function() {
     $.ajax({
