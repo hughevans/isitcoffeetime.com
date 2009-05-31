@@ -46,6 +46,25 @@ namespace :rackup do
   end
 end
 
+app_config = <<-eos
+twitter:
+  username: isitcoffeetime
+  password:
+eos
+
+after 'deploy:setup',       'config_yaml:create_config'
+after 'deploy:update_code', 'config_yaml:symlink'
+
+namespace :config_yaml do
+  task :create_config do
+    put app_config, "#{shared_path}/system/config.yml"
+  end
+  
+  task :symlink do
+    run "ln -nfs #{shared_path}/system/config.yml #{release_path}/config.yml"
+  end
+end
+
 after 'deploy:update_code', 'db:symlink'
 
 namespace :db do

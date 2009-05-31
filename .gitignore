@@ -1,4 +1,5 @@
 .DS_Store
 deploy.yml
 config.ru
-coffeetime.db
+db.sqlite3
+config.yml

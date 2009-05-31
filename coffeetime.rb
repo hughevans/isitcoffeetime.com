@@ -1,11 +1,19 @@
 require 'rubygems'
 require 'sinatra'
+require 'yaml'
 require 'sequel'
 require 'tzinfo'
 require 'json'
 require 'haml'
+require 'httparty'
+gem 'twitter'
+require 'twitter'
+require 'twitter/httpauth'
 
-DB = Sequel.sqlite('db.sqlite3')
+configure do
+  DB = Sequel.sqlite('db.sqlite3')
+  CONFIG = YAML.load(File.read 'config.yml')
+end
 
 DB.create_table :teams do
   primary_key :id
@@ -13,6 +21,19 @@ DB.create_table :teams do
   String :time_zone
   String :twitter_account
 end unless DB.table_exists?(:teams)
+
+module TwitterSession
+  protected
+  def twitter_session
+    @twitter_session ||= Twitter::Base.new(twitter_auth)
+  end
+  
+  def twitter_auth
+    @twitter_auth ||= Twitter::HTTPAuth.new(
+      CONFIG['twitter']['username'],
+      CONFIG['twitter']['password'])
+  end
+end
 
 class Team < Sequel::Model
   plugin :validation_class_methods
@@ -27,6 +48,46 @@ class Team < Sequel::Model
     :message => "Can't be blank"
   validates_presence_of :twitter_account,
     :message => "Can't be blank"
+
+  def validate
+    Team.validate(self)
+    if errors.empty? && Twitter.user(self.twitter_account).error?
+      errors[:twitter_account] << 'Does not exist'
+    end
+  end
+  
+  include TwitterSession
+  
+  def after_save
+    begin
+      twitter_session.friendship_create(self.twitter_account)
+    rescue Twitter::General
+      # bah, already following - pre-check?
+    end
+  end
+end
+
+class DirectMessage
+  attr_accessor :username, :created_at
+
+  def initialize(attributes = {})
+    @username = attributes[:username]
+    @created_at = Time.parse(attributes[:created_at])
+  end
+  
+  self.extend(TwitterSession)
+
+  def self.get_messages
+    twitter_session.direct_messages.map do |msg|
+      self.new(:username => msg.sender_screen_name, :created_at => msg.created_at)
+    end
+  end
+  
+  def self.messages_for(user, since=20)
+    get_messages.select do |msg|
+      msg.username == user && msg.created_at > (Time.now.utc - (since*60))
+    end
+  end
 end
 
 helpers do
@@ -67,5 +128,6 @@ end
 
 get '/:team_name' do
   @team = Team[:name => params[:team_name]] || raise(Sinatra::NotFound)
+  @yes = !DirectMessage.messages_for(@team.twitter_account, 30).empty?
   haml :team
 end
