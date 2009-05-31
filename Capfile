@@ -46,6 +46,14 @@ namespace :rackup do
   end
 end
 
+after 'deploy:update_code', 'db:symlink'
+
+namespace :db do
+  task :symlink do
+    run "ln -nfs #{shared_path}/system/db.sqlite3 #{release_path}/db.sqlite3"
+  end
+end
+
 after 'deploy:setup',       'vendor_gems:install_and_unpack'
 after 'deploy:update_code', 'vendor_gems:symlink'
 

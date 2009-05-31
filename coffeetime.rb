@@ -5,7 +5,7 @@ require 'tzinfo'
 require 'json'
 require 'haml'
 
-DB = Sequel.sqlite('coffeetime.db')
+DB = Sequel.sqlite('db.sqlite3')
 
 DB.create_table :teams do
   primary_key :id
