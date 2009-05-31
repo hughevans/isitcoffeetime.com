@@ -96,6 +96,7 @@ after 'deploy:setup', 'dependent_gems:install'
 namespace :dependent_gems do
   task :install do
     # Dreamhost non-sudo $HOME/.gem install
+    run 'gem install twitter -v 0.6.11'
     run 'gem install sequel -v 3.0.0'
     run 'gem install json -v 1.1.6'
   end

@@ -92,6 +92,20 @@ end
 
 helpers do
   include Rack::Utils; alias_method :h, :escape_html
+  
+  def random_quip
+    quips[rand(quips.size)]
+  end
+  
+  def quips
+    [
+      "it sure is...",
+      "and don't you know it...",
+      "finally!",
+      "go get it!",
+      "why not try a ristretto?"
+    ]
+  end
 end
 
 get '/' do
