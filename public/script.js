@@ -8,15 +8,26 @@ $(document).ready(function() {
     return false;
   });
   
-  $('input#name, input#twitter_account').keyup(function(press) {
-    // Don't check when tabbing into field
-    if (press.keyCode != 9) {
+  $('input#name, input#twitter_account, select#time_zone').keyup(function(press) {
+    // Don't check when tabbing into field or pressing shift
+    if ((press.keyCode != 9) && (press.keyCode != 16)) {
       validateAttribute(this);
     }
   });
   
-  $('select#time_zone').click(function () {
+  $('select#time_zone').change(function () {
     validateAttribute(this);
+  });
+  
+  $('select#time_zone').blur(function () {
+    validateAttribute(this);
+  });
+
+  $('select#time_zone').keyup(function (press) {
+    if (press.keyCode == 13) {
+      $('#custom form').trigger('submit');
+      return false;
+    }
   });
   
   $('#custom form').submit(function() {
@@ -30,7 +41,7 @@ $(document).ready(function() {
           location.href = '/' + rsp.team.name;
         }
         else {
-          alert('Fix your form.');
+          $('#custom #submit').effect('shake', { times:3, distance:8 }, 100);
         }
       }
     });
@@ -46,10 +57,13 @@ $(document).ready(function() {
       data: element.serialize(),
       success: function(rsp) {
         if(rsp.no_errors) {
-          element.css('border-color', '#999');
+          element.css({'border-color' : '#999', 'color' : '#000'});
         }
         else {
-          element.css('border-color', 'red');
+          element.css({'border-color' : 'red'});
+          if(element.attr('tagName') != 'SELECT') {
+            element.css({'color' : 'red'});
+          }
         }
       }
     });
