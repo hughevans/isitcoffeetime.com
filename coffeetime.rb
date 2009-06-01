@@ -11,46 +11,53 @@ require 'twitter'
 require 'twitter/httpauth'
 
 configure do
-  DB = Sequel.sqlite('db.sqlite3')
+  DB     = Sequel.sqlite('db.sqlite3')
   CONFIG = YAML.load(File.read 'config.yml')
 end
 
 DB.create_table :teams do
   primary_key :id
+
   String :name
   String :time_zone
   String :twitter_account
 end unless DB.table_exists?(:teams)
 
 module TwitterSession
-  protected
   def twitter_session
     @twitter_session ||= Twitter::Base.new(twitter_auth)
   end
   
   def twitter_auth
     @twitter_auth ||= Twitter::HTTPAuth.new(
-      CONFIG['twitter']['username'],
-      CONFIG['twitter']['password'])
+        CONFIG['twitter']['username'],
+        CONFIG['twitter']['password']
+      )
   end
 end
 
 class Team < Sequel::Model
   plugin :validation_class_methods
+
   validates_presence_of :name,
     :message => "Can't be blank"
+
   validates_format_of :name, 
-    :with => /^[A-Za-z0-9]+[A-Za-z0-9\-_]*$/,
+    :with    => /^[A-Za-z0-9]+[A-Za-z0-9\-_]*$/,
     :message => 'Can only include a-z, dashes and unerscores'
+
   validates_uniqueness_of :name,
     :message => 'Not available'
+
   validates_presence_of :time_zone,
     :message => "Can't be blank"
+
   validates_presence_of :twitter_account,
     :message => "Can't be blank"
 
   def validate
     Team.validate(self)
+
     if errors.empty? && Twitter.user(self.twitter_account).error?
       errors[:twitter_account] << 'Does not exist'
     end
@@ -71,15 +78,18 @@ class DirectMessage
   attr_accessor :username, :created_at
 
   def initialize(attributes = {})
-    @username = attributes[:username]
-    @created_at = Time.parse(attributes[:created_at])
+    @username   = attributes[:username]
+    @created_at = attributes[:created_at]
   end
   
   self.extend(TwitterSession)
 
   def self.get_messages
     twitter_session.direct_messages.map do |msg|
-      self.new(:username => msg.sender_screen_name, :created_at => msg.created_at)
+      self.new(
+          :username   => msg.sender_screen_name,
+          :created_at => Time.parse(msg.created_at)
+        )
     end
   end
   
@@ -94,17 +104,15 @@ helpers do
   include Rack::Utils; alias_method :h, :escape_html
   
   def random_quip
+    quips = [
+        'it sure is...',
+        "and don't you know it...",
+        'finally!',
+        'go get it!',
+        'why not try a ristretto?',
+        'emphatically'
+      ]
     quips[rand(quips.size)]
-  end
-  
-  def quips
-    [
-      "it sure is...",
-      "and don't you know it...",
-      "finally!",
-      "go get it!",
-      "why not try a ristretto?"
-    ]
   end
 end
 
@@ -142,6 +150,6 @@ end
 
 get '/:team_name' do
   @team = Team[:name => params[:team_name]] || raise(Sinatra::NotFound)
-  @yes = !DirectMessage.messages_for(@team.twitter_account, 30).empty?
+  @yes  = !DirectMessage.messages_for(@team.twitter_account, 1).empty?
   haml :team
 end
