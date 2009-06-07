@@ -37,17 +37,12 @@ end
 
 class Team < Sequel::Model
   plugin :validation_class_methods
-  validates_presence_of :name,
-    :message => "Can't be blank"
-  validates_format_of :name, 
-    :with => /^[A-Za-z0-9]+[A-Za-z0-9\-_]*$/,
-    :message => 'Can only include a-z, dashes and unerscores'
-  validates_uniqueness_of :name,
-    :message => 'Not available'
-  validates_presence_of :time_zone,
-    :message => "Can't be blank"
-  validates_presence_of :twitter_account,
-    :message => "Can't be blank"
+  validates_presence_of   :name,            :message => "Can't be blank"
+  validates_format_of     :name,            :with => /^[A-Za-z0-9]+[A-Za-z0-9\-_]*$/,
+                                            :message => 'Can only include a-z, dashes and unerscores'
+  validates_uniqueness_of :name,            :message => 'Not available'
+  validates_presence_of   :time_zone,       :message => "Can't be blank"
+  validates_presence_of   :twitter_account, :message => "Can't be blank"
 
   def validate
     Team.validate(self)
@@ -142,6 +137,6 @@ end
 
 get '/:team_name' do
   @team = Team[:name => params[:team_name]] || raise(Sinatra::NotFound)
-  @yes = !DirectMessage.messages_for(@team.twitter_account, 30).empty?
+  @yes = !!DirectMessage.messages_for(@team.twitter_account, 30)
   haml :team
 end
