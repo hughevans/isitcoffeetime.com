@@ -69,9 +69,14 @@ class Team < Sequel::Model
   end
   
   def coffee_times
-    messages.map do |msg|
-      Chronic.parse(msg, :now)
-    end
+    messages.map { |msg|
+      time = Chronic.parse(msg.text)
+      time..(time + 20*60) if time
+    }.compact
+  end
+  
+  def in_coffee_time?
+    coffee_times.any? {|d| d.include?(Time.now)}
   end
   
   include TwitterSession
@@ -86,11 +91,12 @@ class Team < Sequel::Model
 end
 
 class DirectMessage
-  attr_accessor :username, :created_at
+  attr_accessor :username, :created_at, :text
 
   def initialize(attributes = {})
     @username   = attributes[:username]
     @created_at = attributes[:created_at]
+    @text       = attributes[:text]
   end
   
   self.extend(TwitterSession)
@@ -100,12 +106,12 @@ class DirectMessage
       self.new(
           :username   => msg.sender_screen_name,
           :created_at => Time.parse(msg.created_at),
-          :message    => msg.txt
+          :text       => msg.text
         )
     end
   end
   
-  def self.messages_for(user, since=20)
+  def self.messages_for(user, since=24*60)
     get_messages.select do |msg|
       msg.username == user && msg.created_at > (Time.now.utc - (since*60))
     end
@@ -162,6 +168,6 @@ end
 
 get '/:team_name' do
   @team = Team[:name => params[:team_name]] || raise(Sinatra::NotFound)
-  @yes = !!DirectMessage.messages_for(@team.twitter_account, 1)
+  @yes = @team.in_coffee_time?
   haml :team
 end
