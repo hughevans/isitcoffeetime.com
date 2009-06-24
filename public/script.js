@@ -8,6 +8,7 @@ $(document).ready(function() {
     return false;
   });
   
+	// TODO: add some kind of delay here (every 1s while there are still keypress events, for example)
   $('input#name, input#twitter_account, select#time_zone').keyup(function(press) {
     // Don't check when tabbing into field or pressing shift
     if ((press.keyCode != 9) && (press.keyCode != 16)) {
