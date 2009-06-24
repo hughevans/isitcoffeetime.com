@@ -9,6 +9,7 @@ require 'httparty'
 gem 'twitter'
 require 'twitter'
 require 'twitter/httpauth'
+require 'chronic'
 
 configure do
   DB     = Sequel.sqlite('db.sqlite3')
@@ -63,6 +64,16 @@ class Team < Sequel::Model
     end
   end
   
+  def messages
+    DirectMessage.messages_for(self.twitter_account)
+  end
+  
+  def coffee_times
+    messages.map do |msg|
+      Chronic.parse(msg, :now)
+    end
+  end
+  
   include TwitterSession
   
   def after_save
@@ -88,7 +99,8 @@ class DirectMessage
     twitter_session.direct_messages.map do |msg|
       self.new(
           :username   => msg.sender_screen_name,
-          :created_at => Time.parse(msg.created_at)
+          :created_at => Time.parse(msg.created_at),
+          :message    => msg.txt
         )
     end
   end
