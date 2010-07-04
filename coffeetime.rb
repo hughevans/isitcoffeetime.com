@@ -114,7 +114,7 @@ end
 
 helpers do
   include Rack::Utils; alias_method :h, :escape_html
-  
+
   def random_quip
     quips = [
         'it sure is...',
@@ -122,7 +122,8 @@ helpers do
         'finally!',
         'go get it!',
         'why not try a ristretto?',
-        'emphatically'
+        'emphatically',
+        'so hit up <a href="http://decafsucks.com">decafsucks.com</a>'
       ]
     quips[rand(quips.size)]
   end
