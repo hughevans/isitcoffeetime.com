@@ -24,6 +24,7 @@ DB.create_table :teams do
   String :twitter_account
 end unless DB.table_exists?(:teams)
 
+
 module TwitterSession
   def twitter_session
     @twitter_session ||= Twitter::Base.new(twitter_auth)
@@ -38,26 +39,18 @@ module TwitterSession
 end
 
 class Team < Sequel::Model
-  plugin :validation_class_methods
-
-  validates_presence_of :name,
-    :message => "Can't be blank"
-
-  validates_format_of :name, 
-    :with    => /^[A-Za-z0-9]+[A-Za-z0-9\-_]*$/,
-    :message => 'Can only include a-z, dashes and unerscores'
-
-  validates_uniqueness_of :name,
-    :message => 'Not available'
-
-  validates_presence_of :time_zone,
-    :message => "Can't be blank"
-
-  validates_presence_of :twitter_account,
-    :message => "Can't be blank"
+  plugin :validation_helpers
 
   def validate
-    Team.validate(self)
+    validates_presence [:name, :time_zone, :twitter_account],
+      :message => "Can't be blank"
+
+    validates_format /^[A-Za-z0-9]+[A-Za-z0-9\-_]*$/,
+      :name,
+      :message => 'Can only include a-z, dashes and unerscores'
+
+    validates_unique :name,
+      :message => 'Not available'
 
     if errors.empty? && Twitter.user(self.twitter_account).error?
       errors[:twitter_account] << 'Does not exist'
@@ -65,6 +58,7 @@ class Team < Sequel::Model
   end
   
   def messages
+    # @messages ||= DirectMessage.messages_for(self.twitter_account)
     DirectMessage.messages_for(self.twitter_account)
   end
   
@@ -75,7 +69,7 @@ class Team < Sequel::Model
     }.compact
   end
   
-  def in_coffee_time?
+  def coffee_time_now?
     coffee_times.any? {|d| d.include?(Time.now)}
   end
   
@@ -168,6 +162,5 @@ end
 
 get '/:team_name' do
   @team = Team[:name => params[:team_name]] || raise(Sinatra::NotFound)
-  @yes = @team.in_coffee_time?
   haml :team
 end
