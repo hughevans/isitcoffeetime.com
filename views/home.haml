@@ -3,19 +3,20 @@
 #byline
   = surround '(', ')' do
     Always, but you can
-    %a{:href => '#custom'} customise
+    / %a{:href => '#custom'} customise
+    %a{:href => 'https://github.com/hughevans/isitcoffeetime.com'} customise
 
-#custom{:style => 'display: none;'}
-  %form{:action => '/teams', :method => 'post'}
-    .form_line
-      %label{:for => 'name'} isitcoffeetime.com/
-      %input{:id => 'name', :name => 'team[name]', :type => 'text'}
-    .form_line
-      %label{:for => 'twitter_account'} twitter user
-      %input{:id => 'twitter_account', :name => 'team[twitter_account]', :type => 'text'}
-    .form_line
-      %label{:for => 'time_zone'} time zone
-      %select{:id => 'time_zone', :name => 'team[time_zone]'}
-        = haml(:_time_zones, :layout => false)
-    %div#submit
-      %button{:type => 'submit'} Submit
+/ #custom{:style => 'display: none;'}
+/   %form{:action => '/teams', :method => 'post'}
+/     .form_line
+/       %label{:for => 'name'} isitcoffeetime.com/
+/       %input{:id => 'name', :name => 'team[name]', :type => 'text'}
+/     .form_line
+/       %label{:for => 'twitter_account'} twitter user
+/       %input{:id => 'twitter_account', :name => 'team[twitter_account]', :type => 'text'}
+/     .form_line
+/       %label{:for => 'time_zone'} time zone
+/       %select{:id => 'time_zone', :name => 'team[time_zone]'}
+/         = haml(:_time_zones, :layout => false)
+/     %div#submit
+/       %button{:type => 'submit'} Submit

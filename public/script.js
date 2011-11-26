@@ -7,23 +7,23 @@ $(document).ready(function() {
     });
     return false;
   });
-  
-	// TODO: add some kind of delay here (every 1s while there are still keypress events, for example)
+
+  // TODO: add some kind of delay here (every 1s while there are still keypress events, for example)
   $('input#name, input#twitter_account, select#time_zone').keyup(function(press) {
     // Don't check when tabbing into field or pressing shift
     if ((press.keyCode != 9) && (press.keyCode != 16)) {
       validateAttribute(this);
     }
   });
-  
+
   $('input#name, input#twitter_account, select#time_zone').blur(function () {
     validateAttribute(this);
   });
-  
+
   $('select#time_zone').change(function () {
     validateAttribute(this);
   });
-  
+
   $('#custom form').submit(function() {
     $.ajax({
       type: 'POST',
@@ -41,7 +41,7 @@ $(document).ready(function() {
     });
     return false;
   });
-  
+
   function validateAttribute(e) {
     var element = $(e);
     $.ajax({

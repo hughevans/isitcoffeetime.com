@@ -1,5 +1,7 @@
 .DS_Store
-deploy.yml
-config.ru
-db.sqlite3
+.rvmrc
+.sass-cache
 config.yml
+deploy.yml
+db.sqlite3
+tmp
