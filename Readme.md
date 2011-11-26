@@ -2,14 +2,14 @@
 
 One of those lame sites that just says "yes" in big letters all the time. But wait, there's more! This allows you to customise and create your own isitcoffeetime.com/_you_ page that can be set to "yes" by Twitter direct messaging _@isitcoffeetime_ with "now" or "11am" etc. It's just a goofball thing that you can throw into campfire etc. to get you and your team out for some caffination.
 
-Hacked out by the attendees of "Canberra Ruby Crew":http://canberraruby.com/ many moons ago.
+Hacked out by the attendees of [Canberra Ruby Crew](http://canberraruby.com/) many moons ago.
 
 ## Contributors
 
-* "Hugh Evans":http://github.com/hughevans
-* "Max Wheeler":http://github.com/makenosound
-* "Tim Riley":http://github.com/timriley
-* "Shoaib Burq":http://github.com/sabman
+* [Hugh Evans](http://github.com/hughevans)
+* [Max Wheeler](http://github.com/makenosound)
+* [Tim Riley](http://github.com/timriley)
+* [Shoaib Burq](http://github.com/sabman)
 
 ## Licence
 
